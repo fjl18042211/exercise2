@@ -3,31 +3,16 @@
 #include <stdlib.h>
 using namespace cv;
 int main() {
-	VideoCapture cap;
-	cap.open(0);
-
-	if(!cap.isOpened())
-{
-		std::cout << "不能打开视频文件" << std::endl;
-		return - 1;
-	}
-	double fps = cap.get(CAP_PROP_FPS);
-	std::cout << "fps" << fps << std::endl;
-	while (1)
-	{
-		cv::Mat frame;
-		bool rSucess = cap.read(frame);
-		if (!rSucess)
-		{
-			std::cout << "不能从视频文件中读取帧" << std::endl;
-			break;
-		}
-		else
-		{
-			cv::imshow("frame ", frame);
-		}
-		waitKey(30);
-	}
-
+	cv::Mat srcMat = imread("D:\\1.jpg");
+	Mat src;
+	cvtColor(srcMat, src, COLOR_BGR2GRAY);
+	Mat result1 = Mat::zeros(Size(256, 256), CV_8UC3);
+	threshold(src, result1, 100, 255, THRESH_BINARY);
+	imshow("【二值化图1】", result1);
+	Mat result2 = Mat::zeros(Size(256, 256), CV_8UC3);
+	adaptiveThreshold(src, result2, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY_INV, 15, 10);
+	imshow("【二值化图2】", result2);
+	waitKey(0);
+	return 0;
 }
 
