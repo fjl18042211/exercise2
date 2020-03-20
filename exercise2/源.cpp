@@ -36,13 +36,6 @@ int main()
 		rectangle(binaryMat, bndbox, CV_RGB(255, 255, 255), 1, 8, 0);
 		cv::putText(binaryMat, num, Point(bndbox.x, bndbox.y), font_face, 1, cv::Scalar(0, 255, 255), thickness, 8, 0);
 	}
-	char text[20];
-	int length = sprintf_s(text, "%d", nComp - 1);
-	cv::Size text_size = cv::getTextSize(text, font_face, font_scale, thickness, &baseline);
-	cv::Point origin;
-	origin.x = 0;
-	origin.y = text_size.height;
-	cv::putText(binaryMat, text, origin, font_face, font_scale, cv::Scalar(0, 255, 255), thickness, 8, 0);
 	imshow("binaryMat", binaryMat);
 	imshow("frame", srcMat);
 	waitKey(0);
