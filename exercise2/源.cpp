@@ -5,15 +5,28 @@ using namespace cv;
 using namespace std;
 int main()
 {
-	cv::Mat dstMat;
-	cv::Mat srcMat = cv::imread("D:\\lena.jpg", 1);
+	cv::Mat canny;
+	cv::Mat srcMat = cv::imread("D:\\metal-part-distorted-03.png", 1);
 	if (srcMat.empty()) return-1;
-	float angle = -10, scale = 1;
-	cv::Point2f center(srcMat.cols*0.5, srcMat.rows*0.5);
-	const cv::Mat affine_matrix = cv::getRotationMatrix2D(center, angle, scale);
-	cv::warpAffine(srcMat, dstMat, affine_matrix, srcMat.size());
-	cv::imshow("src", srcMat);
-	cv::imshow("src", dstMat);
+	Canny(srcMat, canny, 60, 180);
+	cv::imshow("canny", canny);
+	std::vector<cv::Vec2f>lines;
+	cv::HoughLines(canny, lines, 1, CV_PI / 180,100);
+	std::vector<cv::Vec2f>::iterator it = lines.begin();
+	for (; it != lines.end(); ++it) {
+		float rho = (*it)[0], theta = (*it)[1];
+		cv::Point pt1, pt2;
+		double a = cos(theta);
+		double b = sin(theta);
+		double x0 = a * rho;
+		double y0 = b * rho;
+		pt1.x = cv::saturate_cast<int>(x0 + 1000 * (-b));
+		pt1.y = cv::saturate_cast<int>(y0 + 1000 * (a));
+		pt2.x = cv::saturate_cast<int>(x0 - 1000 * (-b));
+		pt2.y = cv::saturate_cast<int>(y0 -1000 * (a));
+		cv::line(srcMat, pt1, pt2, cv::Scalar(0, 0, 255), 1, CV_AA);
+	}
+	imshow("src", srcMat);
 	cv::waitKey(0);
 
 }
